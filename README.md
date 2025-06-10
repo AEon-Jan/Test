@@ -13,7 +13,7 @@ repo/
 │  ├─ docs/
 │  │  └─ openapi.yaml
 │  └─ tsconfig.json
-├─ frontend/           # React (placeholder)
+├─ frontend/           # React + Vite (TypeScript)
 │  └─ (Vite app files)
 ├─ infra/
 │  └─ docker-compose.yml
@@ -23,11 +23,17 @@ repo/
 ```
 
 Run `scripts/install.sh` to generate a `.env` file and initialize local data.
-Install dependencies for each workspace and start the development servers:
+
+Install dependencies for each workspace:
 
 ```bash
 npm install --workspace backend
 npm install --workspace frontend
+```
+
+Build the backend and start both servers:
+
+```bash
 npm --workspace backend run build
 npm --workspace backend start
 npm --workspace frontend start
