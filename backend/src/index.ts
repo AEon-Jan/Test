@@ -10,8 +10,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const publicDir = path.join(__dirname, 'public');
-const repoRoot = path.join(__dirname, '..', '..');
+
+const publicDir = path.join(__dirname, '..', 'public');
+
 
 app.get('/', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
