@@ -28,12 +28,11 @@ function App() {
   };
 
   return (
-    React.createElement('div', null,
-      React.createElement('h1', null, 'Hitster Client'),
-      React.createElement('a', { href: '/auth/login' }, 'Login with Spotify'),
-      React.createElement('div', null,
+    React.createElement('div', { id: 'panel' },
+      React.createElement('h1', null, 'Hitster Webpanel'),
+      React.createElement('a', { href: '/auth/login', className: 'login' }, 'Login with Spotify'),
+      React.createElement('div', { className: 'controls' },
         React.createElement('input', {
-
           value: playlistId,
           onChange: e => setPlaylistId(e.target.value),
           placeholder: 'Playlist ID'
