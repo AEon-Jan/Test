@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hitster Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
+    form div {
+      margin-bottom: 0.5rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ccc;
+    }
+    @media (min-width: 600px) {
+      form div {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      label {
+        flex: 0 0 120px;
+        margin: 0;
+      }
+      input {
+        flex: 1;
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hitster Control Panel</h1>
+    <section>
+      <h2>Import Playlist</h2>
+      <form id="importForm">
+        <div>
+          <label for="token">Access Token</label>
+          <input id="token" required>
+        </div>
+        <div>
+          <label for="playlistId">Playlist ID</label>
+          <input id="playlistId" required>
+        </div>
+        <button type="submit">Import</button>
+      </form>
+      <ul id="playlists"></ul>
+    </section>
+    <section>
+      <h2>Sessions</h2>
+      <button id="newSession">Create Session</button>
+      <ul id="sessions"></ul>
+    </section>
+  </div>
+  <script>
+    async function refresh() {
+      const plRes = await fetch('/api/playlists');
+      const playlists = await plRes.json();
+      const plList = document.getElementById('playlists');
+      plList.innerHTML = playlists.map(p => `<li>${p.name || p.id}</li>`).join('');
+
+      const sRes = await fetch('/api/sessions');
+      const sessions = await sRes.json();
+      const sList = document.getElementById('sessions');
+      sList.innerHTML = sessions.map(s => `<li>${s.id}</li>`).join('');
+    }
+
+    document.getElementById('importForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const token = document.getElementById('token').value;
+      const id = document.getElementById('playlistId').value;
+      await fetch('/api/playlists/' + id, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      await refresh();
+    });
+
+    document.getElementById('newSession').addEventListener('click', async () => {
+      await fetch('/api/sessions', { method: 'POST' });
+      await refresh();
+    });
+
+    refresh();
+  </script>
+</body>
+</html>
