@@ -14,6 +14,7 @@ const publicDir = path.join(__dirname, '..', 'public');
 // resolve the repository root even after compilation
 const repoRoot = path.resolve(__dirname, '..', '..');
 
+
 app.get('/', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
@@ -23,6 +24,7 @@ app.get('/install', (_req: Request, res: Response) => {
 });
 
 app.post('/install', (req: Request, res: Response) => {
+
   const { clientId, clientSecret, redirectUri } = req.body;
   const env = [
     `SPOTIFY_CLIENT_ID=${clientId}`,
@@ -48,11 +50,14 @@ app.get('/login', (_req: Request, res: Response) => {
 });
 
 app.get('/auth/callback', (req: Request, res: Response) => {
+
   const code = req.query.code;
   res.send(`Received code: ${code}`);
 });
 
+
 app.post('/api/playlists/:id', async (req: Request, res: Response) => {
+
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'missing token' });
   try {
@@ -66,6 +71,7 @@ app.post('/api/playlists/:id', async (req: Request, res: Response) => {
   }
 });
 
+
 app.get('/api/playlists', (_req: Request, res: Response) => {
   const db = loadDB();
   res.json(db.playlists);
@@ -77,6 +83,7 @@ app.get('/api/sessions', (_req: Request, res: Response) => {
 });
 
 app.post('/api/sessions', (_req: Request, res: Response) => {
+
   const db = loadDB();
   const id = crypto.randomUUID();
   const session = { id, users: [] };
