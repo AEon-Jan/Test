@@ -15,3 +15,5 @@ Create a `.env` file as shown in the repository root to configure the Spotify cr
 
 - `GET /playlists` – list stored playlists
 - `POST /playlists` – import a playlist by id
+- `POST /users/register` – register a new user
+- `POST /users/login` – login an existing user

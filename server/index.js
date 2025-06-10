@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const playlists = [];
+const users = [];
 
 let accessToken = null;
 let refreshToken = null;
@@ -19,6 +20,28 @@ const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 app.use(bodyParser.json());
+
+// simple in-memory user management
+app.post('/users/register', (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Missing credentials' });
+  }
+  if (users.find(u => u.username === username)) {
+    return res.status(400).json({ error: 'User exists' });
+  }
+  users.push({ username, password });
+  res.json({ status: 'registered' });
+});
+
+app.post('/users/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  res.json({ status: 'logged_in' });
+});
 
 // OAuth login route
 app.get('/auth/login', (_req, res) => {
