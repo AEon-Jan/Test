@@ -12,6 +12,7 @@ app.use(express.json());
 
 
 const publicDir = path.join(__dirname, '..', 'public');
+const repoRoot = path.join(__dirname, '..', '..');
 
 
 app.get('/', (_req: Request, res: Response) => {
@@ -70,6 +71,16 @@ app.post('/api/playlists/:id', async (req: Request, res: Response) => {
   }
 });
 
+
+app.get('/api/playlists', (_req: Request, res: Response) => {
+  const db = loadDB();
+  res.json(db.playlists);
+});
+
+app.get('/api/sessions', (_req: Request, res: Response) => {
+  const db = loadDB();
+  res.json(db.sessions);
+});
 
 app.post('/api/sessions', (_req: Request, res: Response) => {
 
