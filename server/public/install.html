@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Install Hitster</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Hitster Setup</h1>
+  <p>Provide your Spotify credentials and initialize the database.</p>
+  <form id="setup">
+    <div>
+      <label>Client ID<br><input id="clientId" required></label>
+    </div>
+    <div>
+      <label>Client Secret<br><input id="clientSecret" required></label>
+    </div>
+    <div>
+      <label>Redirect URI<br><input id="redirectUri" value="http://localhost:3000/auth/callback" required></label>
+    </div>
+    <button type="submit">Install</button>
+  </form>
+  <div id="status"></div>
+  <script>
+    document.getElementById('setup').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        clientId: document.getElementById('clientId').value,
+        clientSecret: document.getElementById('clientSecret').value,
+        redirectUri: document.getElementById('redirectUri').value
+      };
+      const res = await fetch('/install', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.status === 'installed') {
+        window.location.href = '/panel';
+      } else {
+        document.getElementById('status').textContent = 'Error during setup';
+      }
+    });
+  </script>
+</body>
+</html>

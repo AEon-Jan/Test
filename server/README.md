@@ -9,7 +9,8 @@ npm install
 npm start
 ```
 
-Create a `.env` file as shown in the repository root to configure the Spotify credentials.
+Open `http://localhost:3000/install` and fill in your Spotify credentials.
+After installation you will be redirected to `/panel` where you can manage playlists and users.
 
 ### Endpoints
 
