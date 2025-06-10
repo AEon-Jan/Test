@@ -1,15 +1,14 @@
 # Backend
 
-Express backend with Socket.IO, Spotify OAuth authentication and playlist import.
+Minimal Node.js backend without external dependencies. Stores data in a JSON file.
 
 ## Usage
 
 ```
-npm install
-npm start
+node index.js
 ```
-
-Open `http://localhost:3000/install` and fill in your Spotify credentials.
+Run `../install.sh` once to generate the `.env` file and initialize the data directory.
+Alternatively open `http://localhost:3000/install` to run the web installer and enter your Spotify credentials.
 After installation you will be redirected to `/panel` where you can manage playlists and users.
 
 ### Endpoints
