@@ -12,8 +12,9 @@ function ask(q) {
 }
 
 (async () => {
-  const envExample = path.join(__dirname, '.env.example');
-  const envTarget = path.join(__dirname, '.env');
+  const repoRoot = path.join(__dirname, '..');
+  const envExample = path.join(repoRoot, '.env.example');
+  const envTarget = path.join(repoRoot, '.env');
 
   const defaults = {};
   if (fs.existsSync(envExample)) {
@@ -38,7 +39,7 @@ function ask(q) {
   fs.writeFileSync(envTarget, envContent);
   console.log('Generated .env');
 
-  const dataDir = path.join(__dirname, 'server', 'data');
+  const dataDir = path.join(repoRoot, 'backend', 'data');
   const dbFile = path.join(dataDir, 'data.json');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   if (!fs.existsSync(dbFile)) fs.writeFileSync(dbFile, JSON.stringify({ users: [], playlists: [] }, null, 2));
@@ -46,3 +47,4 @@ function ask(q) {
 
   rl.close();
 })();
+
