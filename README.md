@@ -31,7 +31,7 @@ Token-Verwaltung: Implementierung eines Punktesystems basierend auf Nutzeraktion
 
 Speicherung: Nutzung einer NoSQL-Datenbank (MongoDB) für persistente Speicherung der Tokens und Spielerdaten.
 
-Logik-Engine: Node.js-Backend (Express.js) zur automatisierten Verwaltung und Auswertung von Spieleraktionen.
+Logik-Engine: Node.js-Backend zur automatisierten Verwaltung und Auswertung von Spieleraktionen.
 
 Live-Updates: Echtzeit-Aktualisierung der Spielstände und Ranglisten via WebSockets.
 
@@ -39,15 +39,14 @@ Live-Updates: Echtzeit-Aktualisierung der Spielstände und Ranglisten via WebSoc
 
 This repository contains a simple Node.js backend and a minimal React frontend.
 
-- `server/` – Express backend with Socket.IO and placeholder routes for Spotify OAuth and playlist import.
-- `client/` – React frontend served via Express.
+- `server/` – Minimal Node.js backend storing data in a JSON file.
+- `client/` – React frontend served via a small Node.js HTTP server.
 - `docker-compose.yml` – Example setup to run both services with Docker.
-Run `./install.sh` to install dependencies for both the backend and the client.
-Start the server with `npm start` inside `server/` (or `docker-compose up`).
-Open `http://localhost:3000/install` and enter your Spotify credentials.
+Run `./install.sh` to configure the environment and initialize the local data directory. Start the server with `node index.js` inside `server/` (or `docker-compose up`).
+Alternatively, open `http://localhost:3000/install` and enter your Spotify credentials in the web installer.
 After submitting the form the database is initialized and you will be redirected to `/panel`.
 
-The generated `.env` file stores the credentials and the app will be ready on subsequent starts.
+The installer generates a `.env` file with the provided credentials so the app is ready on subsequent starts.
 Use the web panel at `/panel` to register users, log in and import playlists.
 
 ### API Endpoints
