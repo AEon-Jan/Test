@@ -1,0 +1,8 @@
+{
+  "name": "hitster",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  }
+}

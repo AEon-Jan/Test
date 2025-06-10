@@ -1,9 +1,0 @@
-{
-  "name": "hitster-backend",
-  "version": "1.0.0",
-  "description": "Backend for Hitster clone",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}

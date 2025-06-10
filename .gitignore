@@ -1,2 +1,5 @@
 .env
-server/data/
+backend/data/
+node_modules/
+backend/dist/
+frontend/node_modules/
