@@ -11,7 +11,6 @@ const io = new Server(server);
 
 const playlists = [];
 const users = [];
-
 let accessToken = null;
 let refreshToken = null;
 
@@ -20,7 +19,6 @@ const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 app.use(bodyParser.json());
-
 // simple in-memory user management
 app.post('/users/register', (req, res) => {
   const { username, password } = req.body;
