@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-
+// resolve the repository root even after compilation
+const repoRoot = path.resolve(__dirname, '..', '..');
 const publicDir = path.join(__dirname, '..', 'public');
 const repoRoot = path.join(__dirname, '..', '..');
 
