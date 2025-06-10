@@ -9,6 +9,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// simple landing page so `/` doesn't 404 after auth redirect
+app.get('/', (_req, res) => {
+  res.send('Hitster backend running');
+});
+
 const playlists = [];
 const users = [];
 let accessToken = null;
