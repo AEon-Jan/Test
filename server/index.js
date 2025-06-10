@@ -6,13 +6,19 @@ const { Server } = require('socket.io');
 const fetch = require('node-fetch');
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const envPath = path.join(__dirname, '.env');
 const dbFile = process.env.DB_FILE || 'data.db';
 const db = new Database(dbFile);
+
+function isInstalled() {
+  return fs.existsSync(envPath);
+}
 
 function initDb() {
   db.prepare(`CREATE TABLE IF NOT EXISTS users (
@@ -27,7 +33,19 @@ function initDb() {
   )`).run();
 }
 
-initDb();
+if (isInstalled()) {
+  initDb();
+}
+
+function saveEnv(config) {
+  const lines = [
+    `SPOTIFY_CLIENT_ID=${config.clientId}`,
+    `SPOTIFY_CLIENT_SECRET=${config.clientSecret}`,
+    `SPOTIFY_REDIRECT_URI=${config.redirectUri}`,
+    `DB_FILE=${dbFile}`
+  ];
+  fs.writeFileSync(envPath, lines.join('\n'));
+}
 
 // simple landing page so `/` doesn't 404 after auth redirect
 app.get('/', (_req, res) => {
@@ -43,14 +61,26 @@ const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/panel', express.static(path.join(__dirname, '..', 'client')));
 
 app.get('/install', (_req, res) => {
+  if (isInstalled()) {
+    return res.redirect('/panel');
+  }
   res.sendFile(path.join(__dirname, 'public/install.html'));
 });
 
-app.post('/install', (_req, res) => {
+app.post('/install', (req, res) => {
+  const { clientId, clientSecret, redirectUri } = req.body;
+  if (!clientId || !clientSecret || !redirectUri) {
+    return res.status(400).json({ error: 'Missing fields' });
+  }
+  saveEnv({ clientId, clientSecret, redirectUri });
+  process.env.SPOTIFY_CLIENT_ID = clientId;
+  process.env.SPOTIFY_CLIENT_SECRET = clientSecret;
+  process.env.SPOTIFY_REDIRECT_URI = redirectUri;
   initDb();
-  res.json({ status: 'initialized' });
+  res.json({ status: 'installed' });
 });
 
 app.post('/users/register', (req, res) => {

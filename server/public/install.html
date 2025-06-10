@@ -12,14 +12,39 @@
 </head>
 <body>
   <h1>Hitster Setup</h1>
-  <p>Click the button below to initialize the database.</p>
-  <button id="init">Initialize</button>
+  <p>Provide your Spotify credentials and initialize the database.</p>
+  <form id="setup">
+    <div>
+      <label>Client ID<br><input id="clientId" required></label>
+    </div>
+    <div>
+      <label>Client Secret<br><input id="clientSecret" required></label>
+    </div>
+    <div>
+      <label>Redirect URI<br><input id="redirectUri" value="http://localhost:3000/auth/callback" required></label>
+    </div>
+    <button type="submit">Install</button>
+  </form>
   <div id="status"></div>
   <script>
-    document.getElementById('init').addEventListener('click', async () => {
-      const res = await fetch('/install', { method: 'POST' });
+    document.getElementById('setup').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        clientId: document.getElementById('clientId').value,
+        clientSecret: document.getElementById('clientSecret').value,
+        redirectUri: document.getElementById('redirectUri').value
+      };
+      const res = await fetch('/install', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       const data = await res.json();
-      document.getElementById('status').textContent = data.status === 'initialized' ? 'Database ready!' : 'Error during setup';
+      if (data.status === 'installed') {
+        window.location.href = '/panel';
+      } else {
+        document.getElementById('status').textContent = 'Error during setup';
+      }
     });
   </script>
 </body>
