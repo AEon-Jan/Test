@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Install Hitster</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Hitster Setup</h1>
+  <p>Click the button below to initialize the database.</p>
+  <button id="init">Initialize</button>
+  <div id="status"></div>
+  <script>
+    document.getElementById('init').addEventListener('click', async () => {
+      const res = await fetch('/install', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('status').textContent = data.status === 'initialized' ? 'Database ready!' : 'Error during setup';
+    });
+  </script>
+</body>
+</html>

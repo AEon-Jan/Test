@@ -4,18 +4,36 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const { Server } = require('socket.io');
 const fetch = require('node-fetch');
+const Database = require('better-sqlite3');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
+const dbFile = process.env.DB_FILE || 'data.db';
+const db = new Database(dbFile);
+
+function initDb() {
+  db.prepare(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT
+  )`).run();
+  db.prepare(`CREATE TABLE IF NOT EXISTS playlists (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    tracks INTEGER
+  )`).run();
+}
+
+initDb();
 
 // simple landing page so `/` doesn't 404 after auth redirect
 app.get('/', (_req, res) => {
   res.send('Hitster backend running');
 });
 
-const playlists = [];
-const users = [];
 let accessToken = null;
 let refreshToken = null;
 
@@ -24,22 +42,36 @@ const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 app.use(bodyParser.json());
-// simple in-memory user management
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/install', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public/install.html'));
+});
+
+app.post('/install', (_req, res) => {
+  initDb();
+  res.json({ status: 'initialized' });
+});
+
 app.post('/users/register', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Missing credentials' });
   }
-  if (users.find(u => u.username === username)) {
-    return res.status(400).json({ error: 'User exists' });
+  try {
+    db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, password);
+    res.json({ status: 'registered' });
+  } catch (err) {
+    if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+      return res.status(400).json({ error: 'User exists' });
+    }
+    res.status(500).json({ error: 'Failed to register' });
   }
-  users.push({ username, password });
-  res.json({ status: 'registered' });
 });
 
 app.post('/users/login', (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
+  const user = db.prepare('SELECT * FROM users WHERE username = ? AND password = ?').get(username, password);
   if (!user) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
@@ -84,7 +116,8 @@ app.get('/auth/callback', async (req, res) => {
 
 // Endpoint to list imported playlists
 app.get('/playlists', (_req, res) => {
-  res.json(playlists);
+  const rows = db.prepare('SELECT * FROM playlists').all();
+  res.json(rows);
 });
 
 // Endpoint to import playlist data
@@ -109,7 +142,8 @@ app.post('/playlists', async (req, res) => {
     name: info.name,
     tracks: info.tracks.total
   };
-  playlists.push(playlist);
+  db.prepare('INSERT OR REPLACE INTO playlists (id, name, tracks) VALUES (?, ?, ?)')
+    .run(playlist.id, playlist.name, playlist.tracks);
   io.emit('playlist:imported', playlist);
   res.json({ status: 'imported', playlist });
 });

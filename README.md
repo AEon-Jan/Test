@@ -44,8 +44,11 @@ This repository contains a simple Node.js backend and a minimal React frontend.
 - `docker-compose.yml` – Example setup to run both services with Docker.
 Run `./install.sh` to install dependencies for both the backend and the client.
 Run `npm install` inside `server/` and `client/` to install dependencies.
+Start the server and open `http://localhost:3000/install`.
+Click **Initialize** to set up the SQLite database.
 
 Create a `.env` file based on `.env.example` and provide your Spotify credentials.
+Optionally set `DB_FILE` to specify the SQLite database location.
 After starting the backend visit `http://localhost:3000/auth/login` to authorize the application.
 Once authorized you will be redirected to `/`, which simply confirms that the backend is running.
 
