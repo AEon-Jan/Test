@@ -42,7 +42,7 @@ This repository contains a simple Node.js backend and a minimal React frontend.
 - `server/` – Express backend with Socket.IO and placeholder routes for Spotify OAuth and playlist import.
 - `client/` – React frontend served via Express.
 - `docker-compose.yml` – Example setup to run both services with Docker.
-
+Run `./install.sh` to install dependencies for both the backend and the client.
 Run `npm install` inside `server/` and `client/` to install dependencies.
 
 Create a `.env` file based on `.env.example` and provide your Spotify credentials.
@@ -52,3 +52,5 @@ After starting the backend visit `http://localhost:3000/auth/login` to authorize
 
 - `GET /playlists` – List imported playlists
 - `POST /playlists` – Import a playlist by ID, body: `{ "id": "<playlistId>" }`
+- `POST /users/register` – Register a user, body: `{ "username": "name", "password": "pass" }`
+- `POST /users/login` – Login a user, body: `{ "username": "name", "password": "pass" }`

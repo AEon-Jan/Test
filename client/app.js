@@ -5,6 +5,7 @@ function App() {
   const [playlistId, setPlaylistId] = useState('');
   const [playlists, setPlaylists] = useState([]);
 
+
   useEffect(() => {
     fetch('/playlists')
       .then(res => res.json())
@@ -32,6 +33,7 @@ function App() {
       React.createElement('a', { href: '/auth/login' }, 'Login with Spotify'),
       React.createElement('div', null,
         React.createElement('input', {
+
           value: playlistId,
           onChange: e => setPlaylistId(e.target.value),
           placeholder: 'Playlist ID'
