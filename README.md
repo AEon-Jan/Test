@@ -47,6 +47,7 @@ Run `npm install` inside `server/` and `client/` to install dependencies.
 
 Create a `.env` file based on `.env.example` and provide your Spotify credentials.
 After starting the backend visit `http://localhost:3000/auth/login` to authorize the application.
+Once authorized you will be redirected to `/`, which simply confirms that the backend is running.
 
 ### API Endpoints
 
